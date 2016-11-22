@@ -1,0 +1,154 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <windows.h>
+#include <time.h>
+#define arriba 72
+#define abajo 80
+#define derecha 77
+#define izquierda 75
+void llenar_vacia (int M[30][30]);
+void llenar_usuario (int M[30][30]);
+void imprimir (int M[30][30]);
+void juego_vida (int M[30][30]);
+
+/* run this program using the console pauser or add your own getch, system("pause") or input loop */
+
+int main(int argc, char *argv[]) {
+	    
+	int M[30][30];
+	
+		
+	llenar_vacia(M);
+    llenar_usuario(M);
+    juego_vida(M);
+  
+	return 0;
+}
+
+//cargar la matriz;
+void llenar_vacia(int M[30][30]){
+	int i,j;
+	for(i=0;i<30;i++){
+		for(j=0;j<30;j++){
+			M[i][j]=42;
+		}
+	}
+}
+
+//imprimir la matriz;
+void imprimir(int M[30][30]){
+	int i,j;
+	for(i=0;i<30;i++){
+		printf("\n");
+		for(j=0;j<30;j++){
+			if(M[i][j]==3){
+				color(11);
+			}
+			if(M[i][j]==254){
+				color(12);
+			}
+			printf("%c",M[i][j]);
+			color(7);
+		}
+	}
+
+}
+
+//funcion para que el usuario llene la matriz con lo que desee en este caso; 
+void llenar_usuario(int M[30][30]){
+	int posf=0,posc=0,auxf=0,auxc=0,valor=42;
+	char tecla=0;
+	M[posf][posc]=254;
+	while(tecla!='f'){
+		tecla=getch();
+		M[posf][posc]=42;
+		if(tecla==arriba){
+			if(posf-1>=0){
+				posf--;
+			}
+		}
+		if(tecla==abajo){
+			if(posf+1<30){
+				posf++;
+			}
+		}
+		if(tecla==izquierda){
+			if(posc-1>=0){
+				posc--;
+			}
+		}
+		if(tecla==derecha){
+			if(posc+1<30){
+				posc++;
+			}
+		}
+		M[auxf][auxc]=valor;
+		auxf=posf;
+		auxc=posc;
+		valor=M[posf][posc];
+		M[posf][posc]=254;
+		if(tecla=='v'){
+			valor=3;
+		}
+		if(tecla=='d'){
+			valor=42;
+		}
+		system("cls");
+		imprimir(M);
+	}
+}
+
+void juego_vida (int M[30][30]){
+	int aux[30][30],cont,i,j,k,z;
+	char tecla=0;
+	llenar_vacia(aux);
+	while (tecla!='x'){
+		if(kbhit()){
+			tecla=getch();
+		}
+		llenar_vacia(aux);
+		for(i=0;i<30;i++){
+			for(j=0;j<30;j++){
+			    cont=0;
+				for(k=i-1;k<=i+1;k++){
+				    for(z=j-1;z<=j+1;z++){
+						if(k!=i||z!=j){
+							if(k>=0&&z>=0&&k<30&&z<30){
+								if(M[k][z]==3){
+									cont++;
+								}
+							}
+						}
+						
+					}
+				}
+				if(M[i][j]==42){
+					if(cont>=3){
+						aux[i][j]=3;
+					}
+				}
+				if(M[i][j]==3){
+					if(cont==2||cont==3){
+						aux[i][j]=3;
+					}
+				}
+			}
+		}
+		for(i=0;i<30;i++){
+			for(j=0;j<30;j++){
+				M[i][j]=aux[i][j];
+			}
+		}
+		system("cls");
+		imprimir(M);
+	}
+}
+
+//funcion para poner color
+void  color(int c){
+    HANDLE consol;
+	consol = GetStdHandle
+	(STD_OUTPUT_HANDLE);
+	SetConsoleTextAttribute
+	(consol, c);
+}
